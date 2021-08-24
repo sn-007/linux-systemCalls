@@ -19,6 +19,16 @@ void reverseArray(char *array, lli size) {
   }
 }
 
+void printPercentage(lli numerator,lli denominator)
+{
+    float percentage = (float)numerator / denominator;
+    percentage *= 100;
+    char *percentageArray = malloc(sizeof(char) * 20);
+    sprintf(percentageArray, " STATUS:%.2f%c\r", percentage, 37);
+    write(1, percentageArray, strlen(percentageArray));
+    free(percentageArray);
+}
+
 int main(int argc, char *argv[]) {
   // INPUT VALIDATIONS:
   struct stat sb;
@@ -44,10 +54,11 @@ int main(int argc, char *argv[]) {
 
   // input file details
   char *inputFileName = &argv[1][i + 1];
-  lli inputFileLength = strlen(inputFileName);
+  int inputFileLength = strlen(inputFileName);
+  int totalPieces = argv[2][0] - '0', pieceTobeReversed = argv[3][0] - '0';
 
   // output file path manipulations
-  char temp[13] = "Assignment/1_", outputFilePath[13 + inputFileLength];
+  char temp[13] = "Assignment/2_", outputFilePath[13 + inputFileLength];
   for (i = 0; i < 13; i++)
     outputFilePath[i] = temp[i];
 
@@ -64,53 +75,54 @@ int main(int argc, char *argv[]) {
   fd2 = open(outputFilePath, O_CREAT | O_RDWR, 0644); //-rw-r--r--
 
   // READING 1e6 bytes at a time. AND writing them to fd2
-  lli partSize = 1e6;
-  lli rem = sb.st_size % partSize, numOfParts = sb.st_size / partSize,
-      readParts = 0;
+  lli chunkSize = 1e6, sizePerPiece = sb.st_size / totalPieces;
+  lli rem = sizePerPiece % chunkSize, numOfchunks = sizePerPiece / chunkSize,
+      readchunks = 0;
 
-  lseek(fd1, 0, SEEK_END); // moving to the end of the input file
+  
+
+
+  lseek(fd1, pieceTobeReversed * sizePerPiece,SEEK_SET); // moving to the end of the required piece.
 
   if (rem != 0) {
-
     char *remArray = malloc(sizeof(char) * rem);
+
     lseek(fd1, -rem, SEEK_CUR);
+
     read(fd1, remArray, rem);
     reverseArray(remArray, rem);
     write(fd2, remArray, rem);
-    readParts += rem;
-    free(remArray);
-    float percentage = (float)readParts / sb.st_size;
-    percentage *= 100;
-    char *percentageArray = malloc(sizeof(char) * 20);
-    sprintf(percentageArray, "STATUS:%.2f%c \r", percentage, 37);
-    write(1, percentageArray, strlen(percentageArray));
-    free(percentageArray);
 
+    readchunks += rem;
+
+    free(remArray);
+    printPercentage(readchunks, sizePerPiece);
+
+    
   }
 
-  while (numOfParts--) {
-    char *partArray = malloc(sizeof(char) * partSize);
-    lseek(fd1, -partSize - readParts, SEEK_END);
-    read(fd1, partArray, partSize);
-    reverseArray(partArray, partSize);
-    write(fd2, partArray, partSize);
-    readParts += partSize;
-    free(partArray);
-    float percentage = (float)readParts / sb.st_size;
-    percentage *= 100;
+  while (numOfchunks--) {
+    char *chunkArray = malloc(sizeof(char) * chunkSize);
 
-    char *percentageArray = malloc(sizeof(char) * 20);
+    lseek(fd1, pieceTobeReversed * sizePerPiece,SEEK_SET); // moving to the end of the required piece.
+    lseek(fd1, -chunkSize-readchunks, SEEK_CUR);
 
-    sprintf(percentageArray, "STATUS:%.2f%c \r", percentage, 37);
-    write(1, percentageArray, strlen(percentageArray));
-    free(percentageArray);
+    read(fd1, chunkArray, chunkSize);
+    reverseArray(chunkArray, chunkSize);
+    write(fd2, chunkArray, chunkSize);
+
+    readchunks += chunkSize;
+
+    free(chunkArray);
+    printPercentage(readchunks, sizePerPiece);
+
+    
   }
 
   close(fd1);
   close(fd2);
-  // Assigning permissions
-  chmod("Assignment", S_IRWXU );
-  chmod(outputFilePath, S_IRUSR | S_IWUSR );
+  chmod("Assignment", S_IRWXU);
+  chmod(outputFilePath, S_IRUSR | S_IWUSR);
 
   return 0;
 }
