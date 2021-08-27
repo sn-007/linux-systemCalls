@@ -121,7 +121,6 @@ int main(int argc, char *argv[]) {
 
   close(fd1);
   close(fd2);
-  chmod("Assignment", S_IRWXU);
   chmod(outputFilePath, S_IRUSR | S_IWUSR);
 
   return 0;

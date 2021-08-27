@@ -1,3 +1,1 @@
-My
-name
-is abcde
+My name is abcde
