@@ -26,7 +26,8 @@ void printPercentage(lli numerator,lli denominator)
     char *percentageArray = malloc(sizeof(char) * 20);
     sprintf(percentageArray, " STATUS:%.2f%c\r", percentage, 37);
     write(1, percentageArray, strlen(percentageArray));
-    free(percentageArray);
+    //free(percentageArray);
+    percentageArray="\0";
 }
 
 int main(int argc, char *argv[]) {
@@ -95,7 +96,8 @@ int main(int argc, char *argv[]) {
 
     readchunks += rem;
 
-    free(remArray);
+    //free(remArray);
+    remArray="\0";
     printPercentage(readchunks, sizePerPiece);
 
     
@@ -113,7 +115,8 @@ int main(int argc, char *argv[]) {
 
     readchunks += chunkSize;
 
-    free(chunkArray);
+    //free(chunkArray);
+    chunkArray="\0";
     printPercentage(readchunks, sizePerPiece);
 
     

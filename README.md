@@ -8,4 +8,9 @@
 
 * For Q3 if directory 'Assignment' doesn't exist, program will be terminated with an error message.
 
+* For small inputs the percentage cannot be seen by naked eye.
+
+* Only real time  percentage will be printed. After the completion of process no feed back is provided.
+
+
 

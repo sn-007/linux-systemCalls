@@ -72,8 +72,11 @@ int main(int argc, char *argv[]) {
   lli inputFileLength = strlen(inputFileName);
 
   // output file path manipulations
-  char temp1[13] = "Assignment/1_", outputFile1Path[13 + inputFileLength];
-  char temp2[13] = "Assignment/2_", outputFile2Path[13 + inputFileLength];
+  char temp1[13] = "Assignment/1_";
+  char temp2[13] = "Assignment/2_";
+  char *outputFile1Path = malloc(sizeof(char) * (13 + inputFileLength));
+  char *outputFile2Path = malloc(sizeof(char) * (13 + inputFileLength));
+
   for (i = 0; i < 13; i++) {
 
     outputFile1Path[i] = temp1[i];
@@ -86,10 +89,13 @@ int main(int argc, char *argv[]) {
   }
 
   if (stat("Assignment", &sd) == -1) {
-    write(1, "Assignment Directory Doesn't exist",
-          strlen("Assignment Directory Doesn't exist"));
+    write(1, "Directory is created: No\n",
+          strlen("Directory is created: No\n"));
     return 0;
   } else {
+    write(1, "Directory is created: Yes\n",
+          strlen("Directory is created: Yes\n"));
+
     char directoryPermissions[10];
     sprintf(directoryPermissions, "%o", sd.st_mode);
     check("User", directoryPermissions[strlen(directoryPermissions) - 3],
@@ -103,7 +109,7 @@ int main(int argc, char *argv[]) {
   if (stat(outputFile1Path, &sb1) == -1) {
     write(1, "OutputFile_1 Doesn't exist\n",
           strlen("OutputFile_1 Doesn't exist\n"));
-          
+
   } else {
     char output_file1Permissions[10];
     sprintf(output_file1Permissions, "%o", sb1.st_mode);
@@ -111,14 +117,15 @@ int main(int argc, char *argv[]) {
           "output_file1");
     check("Group", output_file1Permissions[strlen(output_file1Permissions) - 2],
           "output_file1");
-    check("Others", output_file1Permissions[strlen(output_file1Permissions) - 1],
+    check("Others",
+          output_file1Permissions[strlen(output_file1Permissions) - 1],
           "output_file1");
   }
 
   if (stat(outputFile2Path, &sb2) == -1) {
     write(1, "OutputFile_2 Doesn't exist\n",
           strlen("OutputFile_2 Doesn't exist\n"));
-          
+
   } else {
     char output_file2Permissions[10];
     sprintf(output_file2Permissions, "%o", sb2.st_mode);
@@ -126,10 +133,10 @@ int main(int argc, char *argv[]) {
           "output_file2");
     check("Group", output_file2Permissions[strlen(output_file2Permissions) - 2],
           "output_file2");
-    check("Others", output_file2Permissions[strlen(output_file2Permissions) - 1],
+    check("Others",
+          output_file2Permissions[strlen(output_file2Permissions) - 1],
           "output_file2");
   }
-  
 
   return 0;
 }

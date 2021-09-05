@@ -78,13 +78,15 @@ int main(int argc, char *argv[]) {
     reverseArray(remArray, rem);
     write(fd2, remArray, rem);
     readParts += rem;
-    free(remArray);
+    //free(remArray);
+    remArray="\0";
     float percentage = (float)readParts / sb.st_size;
     percentage *= 100;
     char *percentageArray = malloc(sizeof(char) * 20);
     sprintf(percentageArray, "STATUS:%.2f%c \r", percentage, 37);
     write(1, percentageArray, strlen(percentageArray));
-    free(percentageArray);
+    //free(percentageArray);
+    percentageArray="\0";
 
   }
 
@@ -95,7 +97,8 @@ int main(int argc, char *argv[]) {
     reverseArray(partArray, partSize);
     write(fd2, partArray, partSize);
     readParts += partSize;
-    free(partArray);
+    //free(partArray);
+    partArray="\0";
     float percentage = (float)readParts / sb.st_size;
     percentage *= 100;
 
@@ -103,7 +106,8 @@ int main(int argc, char *argv[]) {
 
     sprintf(percentageArray, "STATUS:%.2f%c \r", percentage, 37);
     write(1, percentageArray, strlen(percentageArray));
-    free(percentageArray);
+    //free(percentageArray);
+    percentageArray="\0";
   }
 
   close(fd1);
